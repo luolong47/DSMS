@@ -146,6 +146,60 @@ erDiagram
     }
 ```
 
+### 批次管理功能流程图
+
+```mermaid
+flowchart TD
+    A[开始] --> B[显示批次列表]
+    B --> T[筛选批次]
+    T --> T1[按批次号搜索]
+    T --> T2[按日期范围筛选]
+    T1 --> B
+    T2 --> B
+    B --> C[选择操作类型]
+    C --> D[新增批次]
+    C --> E[编辑批次]
+    C --> F[删除批次]
+    C --> G[查看批次详情]
+    
+    D --> H[填写批次信息]
+    H --> I{验证批次信息}
+    I -->|验证失败| J[显示错误信息]
+    J --> H
+    I -->|验证通过| K[保存批次信息]
+    K --> B
+    
+    E --> L[加载批次信息]
+    L --> M[修改批次信息]
+    M --> N{验证批次信息}
+    N -->|验证失败| O[显示错误信息]
+    O --> M
+    N -->|验证通过| P[更新批次信息]
+    P --> B
+    
+    F --> Q{确认删除}
+    Q -->|取消| B
+    Q -->|确认| R[删除批次]
+    R --> B
+    
+    G --> S[显示批次详细信息]
+    S --> B
+```
+
+### 批次管理ER图
+
+```mermaid
+erDiagram
+    t_BATCH {
+        string batch_no PK
+        datetime start_date
+        datetime end_date
+        datetime created_at
+        datetime updated_at
+        string last_modified_by
+    }
+```
+
 ## 开发环境要求
 
 ### 前端

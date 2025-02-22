@@ -12,6 +12,12 @@
         >
           <span class="ml-2">产品管理</span>
         </NuxtLink>
+        <NuxtLink
+          to="/batches"
+          class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+        >
+          <span class="ml-2">批次管理</span>
+        </NuxtLink>
       </nav>
     </div>
 

@@ -5,8 +5,21 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    'nuxt-icon'
+    '@nuxt/icon',
+    '@nuxt/ui'
   ],
+
+  tailwindcss: {
+    exposeConfig: true
+  },
+
+  ui: {
+    global: true
+  },
+
+  colorMode: {
+    preference: 'light'
+  },
 
   runtimeConfig: {
     public: {
