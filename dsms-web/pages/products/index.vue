@@ -29,22 +29,38 @@
                 v-model="searchForm.productNameEn"
                 placeholder="搜索产品英文名称"
                 icon="i-heroicons-magnifying-glass"
-                trailing
-                :trailing-icon="searchForm.productNameEn ? 'i-heroicons-x-mark' : ''"
-                @trailing-click="searchForm.productNameEn = ''"
-                color="primary"
-              />
+                :ui="{ icon: { trailing: { pointer: '' } } }"
+              >
+                <template #trailing>
+                  <UButton
+                    v-show="searchForm.productNameEn !== ''"
+                    color="gray"
+                    variant="link"
+                    icon="i-heroicons-x-mark"
+                    :padded="false"
+                    @click="searchForm.productNameEn = ''"
+                  />
+                </template>
+              </UInput>
             </UFormGroup>
             <UFormGroup>
               <UInput
                 v-model="searchForm.productNameCn"
                 placeholder="搜索产品中文名称"
                 icon="i-heroicons-magnifying-glass"
-                trailing
-                :trailing-icon="searchForm.productNameCn ? 'i-heroicons-x-mark' : ''"
-                @trailing-click="searchForm.productNameCn = ''"
-                color="primary"
-              />
+                :ui="{ icon: { trailing: { pointer: '' } } }"
+              >
+                <template #trailing>
+                  <UButton
+                    v-show="searchForm.productNameCn !== ''"
+                    color="gray"
+                    variant="link"
+                    icon="i-heroicons-x-mark"
+                    :padded="false"
+                    @click="searchForm.productNameCn = ''"
+                  />
+                </template>
+              </UInput>
             </UFormGroup>
           </div>
         </UForm>

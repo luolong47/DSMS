@@ -9,14 +9,26 @@
         <NuxtLink
           to="/products"
           class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+          :class="{ 'bg-gray-100': route.path.startsWith('/products') }"
         >
+          <UIcon name="i-heroicons-cube" class="w-5 h-5" />
           <span class="ml-2">产品管理</span>
         </NuxtLink>
         <NuxtLink
           to="/batches"
           class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+          :class="{ 'bg-gray-100': route.path.startsWith('/batches') }"
         >
+          <UIcon name="i-heroicons-squares-2x2" class="w-5 h-5" />
           <span class="ml-2">批次管理</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/product-batches"
+          class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+          :class="{ 'bg-gray-100': route.path.startsWith('/product-batches') }"
+        >
+          <UIcon name="i-heroicons-rectangle-stack" class="w-5 h-5" />
+          <span class="ml-2">产品批次关联</span>
         </NuxtLink>
       </nav>
     </div>
@@ -29,12 +41,14 @@
           <div class="flex justify-end h-16">
             <div class="flex items-center space-x-4">
               <span class="text-gray-700">欢迎，{{ authStore.user?.username }}</span>
-              <button
+              <UButton
+                icon="i-heroicons-arrow-right-on-rectangle"
+                color="primary"
+                variant="soft"
                 @click="handleLogout"
-                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 退出登录
-              </button>
+              </UButton>
             </div>
           </div>
         </div>
@@ -50,6 +64,7 @@
 
 <script setup>
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const handleLogout = () => {

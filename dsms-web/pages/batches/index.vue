@@ -29,11 +29,19 @@
                 v-model="searchForm.batchNo"
                 placeholder="搜索批次号"
                 icon="i-heroicons-magnifying-glass"
-                trailing
-                :trailing-icon="searchForm.batchNo ? 'i-heroicons-x-mark' : ''"
-                @trailing-click="searchForm.batchNo = ''"
-                color="primary"
-              />
+                :ui="{ icon: { trailing: { pointer: '' } } }"
+              >
+                <template #trailing>
+                  <UButton
+                    v-show="searchForm.batchNo !== ''"
+                    color="gray"
+                    variant="link"
+                    icon="i-heroicons-x-mark"
+                    :padded="false"
+                    @click="searchForm.batchNo = ''"
+                  />
+                </template>
+              </UInput>
             </UFormGroup>
             <UFormGroup label="">
               <UPopover :popper="{ placement: 'bottom-start' }">

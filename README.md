@@ -200,6 +200,85 @@ erDiagram
     }
 ```
 
+### 产品批次关联管理功能流程图
+
+```mermaid
+flowchart TD
+    A[开始] --> B[显示产品批次关联列表]
+    B --> T[筛选关联记录]
+    T --> T1[按产品名称搜索]
+    T --> T2[按批次号搜索]
+    T --> T3[按日期范围筛选]
+    T1 --> B
+    T2 --> B
+    T3 --> B
+    
+    B --> C[选择操作类型]
+    C --> D[新增关联]
+    C --> E[编辑关联]
+    C --> F[删除关联]
+    C --> G[查看关联详情]
+    
+    D --> H1[选择产品]
+    H1 --> H2[选择批次]
+    H2 --> H3[填写关联信息]
+    H3 --> I{验证关联信息}
+    I -->|验证失败| J[显示错误信息]
+    J --> H3
+    I -->|验证通过| K[保存关联信息]
+    K --> B
+    
+    E --> L[加载关联信息]
+    L --> M[修改关联信息]
+    M --> N{验证关联信息}
+    N -->|验证失败| O[显示错误信息]
+    O --> M
+    N -->|验证通过| P[更新关联信息]
+    P --> B
+    
+    F --> Q{确认删除}
+    Q -->|取消| B
+    Q -->|确认| R[删除关联]
+    R --> B
+    
+    G --> S[显示关联详细信息]
+    S --> B
+```
+
+### 产品批次关联管理ER图
+
+```mermaid
+erDiagram
+    t_PRODUCT ||--o{ t_PRODUCT_BATCH : contains
+    t_PRODUCT {
+        string product_name_en PK
+        string product_name_cn
+        string description
+        datetime created_at
+        datetime updated_at
+        string last_modified_by
+    }
+    
+    t_BATCH ||--o{ t_PRODUCT_BATCH : belongs_to
+    t_BATCH {
+        string batch_no PK
+        datetime start_date
+        datetime end_date
+        datetime created_at
+        datetime updated_at
+        string last_modified_by
+    }
+    
+    t_PRODUCT_BATCH {
+        string product_batch_id PK
+        string product_name_en FK
+        string batch_no FK
+        datetime created_at
+        datetime updated_at
+        string last_modified_by
+    }
+```
+
 ## 开发环境要求
 
 ### 前端
