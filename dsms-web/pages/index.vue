@@ -9,7 +9,7 @@
             欢迎回来，{{ user?.name || '用户' }}
           </h1>
           <p class="text-gray-600 flex items-center gap-2">
-            <UIcon name="i-material-symbols-calendar-today" />
+            <UIcon name="i-heroicons-calendar" />
             今天是 {{ currentDate }}，祝您工作愉快！
           </p>
         </div>
@@ -24,10 +24,10 @@
             <template #header>
               <div class="flex items-center justify-between">
                 <div class="p-3 bg-blue-100 rounded-xl">
-                  <UIcon name="i-material-symbols-inventory-2" class="text-2xl text-blue-600" />
+                  <UIcon name="i-heroicons-cube" class="text-2xl text-blue-600" />
                 </div>
                 <UIcon
-                  name="i-material-symbols-arrow-forward"
+                  name="i-heroicons-arrow-right"
                   class="text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"
                 />
               </div>
@@ -44,10 +44,10 @@
             <template #header>
               <div class="flex items-center justify-between">
                 <div class="p-3 bg-purple-100 rounded-xl">
-                  <UIcon name="i-material-symbols-layers" class="text-2xl text-purple-600" />
+                  <UIcon name="i-heroicons-squares-2x2" class="text-2xl text-purple-600" />
                 </div>
                 <UIcon
-                  name="i-material-symbols-arrow-forward"
+                  name="i-heroicons-arrow-right"
                   class="text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"
                 />
               </div>
@@ -61,18 +61,18 @@
             <template #header>
               <div class="flex items-center justify-between">
                 <div class="p-3 bg-green-100 rounded-xl">
-                  <UIcon name="i-material-symbols-monitoring" class="text-2xl text-green-600" />
+                  <UIcon name="i-heroicons-chart-bar" class="text-2xl text-green-600" />
                 </div>
               </div>
             </template>
             <h3 class="text-xl font-semibold text-gray-900 mb-2">系统概览</h3>
             <div class="space-y-2">
               <p class="text-gray-600 flex items-center gap-2">
-                <UIcon name="i-material-symbols-history" />
+                <UIcon name="i-heroicons-clock" />
                 上次登录: {{ formatDate(user?.lastLogin) }}
               </p>
               <p class="text-gray-600 flex items-center gap-2">
-                <UIcon name="i-material-symbols-info" />
+                <UIcon name="i-heroicons-information-circle" />
                 系统版本: v1.0.0
               </p>
             </div>

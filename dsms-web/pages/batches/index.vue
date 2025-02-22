@@ -9,7 +9,7 @@
             <p class="mt-2 text-gray-600">管理产品批次信息</p>
           </div>
           <UButton
-            icon="i-material-symbols-add"
+            icon="i-heroicons-plus"
             color="primary"
             variant="solid"
             @click="handleAdd"
@@ -28,8 +28,10 @@
               <UInput
                 v-model="searchForm.batchNo"
                 placeholder="搜索批次号"
-                icon="i-material-symbols-search"
-                :trailing="searchForm.batchNo ? { icon: 'i-material-symbols-close', click: () => searchForm.batchNo = '' } : null"
+                icon="i-heroicons-magnifying-glass"
+                trailing
+                :trailing-icon="searchForm.batchNo ? 'i-heroicons-x-mark' : ''"
+                @trailing-click="searchForm.batchNo = ''"
                 color="primary"
               />
             </UFormGroup>
@@ -38,13 +40,13 @@
                 <UButton
                   color="primary"
                   variant="soft"
-                  :icon="searchForm.startDate ? undefined : 'i-material-symbols-calendar-today'"
+                  :icon="searchForm.startDate ? undefined : 'i-heroicons-calendar'"
                   class="w-full justify-start"
                 >
                   {{ searchForm.startDate ? formatDate(searchForm.startDate) : '选择开始日期' }}
                   <UIcon
                     v-if="searchForm.startDate"
-                    name="i-material-symbols-close"
+                    name="i-heroicons-x-mark"
                     class="ml-auto cursor-pointer"
                     @click.stop="searchForm.startDate = ''"
                   />
@@ -63,13 +65,13 @@
                 <UButton
                   color="primary"
                   variant="soft"
-                  :icon="searchForm.endDate ? undefined : 'i-material-symbols-calendar-today'"
+                  :icon="searchForm.endDate ? undefined : 'i-heroicons-calendar'"
                   class="w-full justify-start"
                 >
                   {{ searchForm.endDate ? formatDate(searchForm.endDate) : '选择结束日期' }}
                   <UIcon
                     v-if="searchForm.endDate"
-                    name="i-material-symbols-close"
+                    name="i-heroicons-x-mark"
                     class="ml-auto cursor-pointer"
                     @click.stop="searchForm.endDate = ''"
                   />
@@ -92,19 +94,19 @@
         :rows="filteredBatches"
         :columns="columns"
         :loading="loading"
-        :empty-state="{ icon: 'i-material-symbols-list', label: '暂无数据' }"
+        :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
       >
         <template #actions-data="{ row }">
           <UButtonGroup>
             <UButton
-              icon="i-material-symbols-edit"
+              icon="i-heroicons-pencil"
               color="primary"
               variant="ghost"
               size="xs"
               @click="handleEdit(row)"
             />
             <UButton
-              icon="i-material-symbols-delete"
+              icon="i-heroicons-trash"
               color="red"
               variant="ghost"
               size="xs"
@@ -122,7 +124,7 @@
           <div class="flex items-center justify-between">
             <h3 class="text-xl font-bold text-gray-900">{{ isEdit ? '编辑批次' : '新增批次' }}</h3>
             <UButton
-              icon="i-material-symbols-close"
+              icon="i-heroicons-x-mark"
               color="gray"
               variant="ghost"
               @click="showDialog = false"

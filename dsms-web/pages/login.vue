@@ -14,7 +14,7 @@
             <UInput
               v-model="formData.username"
               name="username"
-              icon="i-material-symbols-person"
+              icon="i-heroicons-user"
               placeholder="请输入用户名"
               required
               autocomplete="username"
@@ -27,7 +27,7 @@
               v-model="formData.password"
               name="password"
               type="password"
-              icon="i-material-symbols-lock"
+              icon="i-heroicons-lock-closed"
               placeholder="请输入密码"
               required
               autocomplete="current-password"
@@ -40,7 +40,7 @@
             type="error"
             title="登录失败"
             :description="error"
-            icon="i-material-symbols-error"
+            icon="i-heroicons-exclamation-circle"
             class="animate-bounce"
           />
 
@@ -50,7 +50,7 @@
             size="lg"
             block
             :loading="loading"
-            icon="i-material-symbols-login"
+            icon="i-heroicons-arrow-right-on-rectangle"
           >
             登录
           </UButton>

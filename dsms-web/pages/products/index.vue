@@ -9,7 +9,7 @@
             <p class="mt-2 text-gray-600">管理和维护产品信息</p>
           </div>
           <UButton
-            icon="i-material-symbols-add"
+            icon="i-heroicons-plus"
             color="primary"
             variant="solid"
             @click="handleAdd"
@@ -28,8 +28,10 @@
               <UInput
                 v-model="searchForm.productNameEn"
                 placeholder="搜索产品英文名称"
-                icon="i-material-symbols-search"
-                :trailing="searchForm.productNameEn ? { icon: 'i-material-symbols-close', click: () => searchForm.productNameEn = '' } : null"
+                icon="i-heroicons-magnifying-glass"
+                trailing
+                :trailing-icon="searchForm.productNameEn ? 'i-heroicons-x-mark' : ''"
+                @trailing-click="searchForm.productNameEn = ''"
                 color="primary"
               />
             </UFormGroup>
@@ -37,8 +39,10 @@
               <UInput
                 v-model="searchForm.productNameCn"
                 placeholder="搜索产品中文名称"
-                icon="i-material-symbols-search"
-                :trailing="searchForm.productNameCn ? { icon: 'i-material-symbols-close', click: () => searchForm.productNameCn = '' } : null"
+                icon="i-heroicons-magnifying-glass"
+                trailing
+                :trailing-icon="searchForm.productNameCn ? 'i-heroicons-x-mark' : ''"
+                @trailing-click="searchForm.productNameCn = ''"
                 color="primary"
               />
             </UFormGroup>
@@ -51,7 +55,7 @@
         :rows="filteredProducts"
         :columns="columns"
         :loading="loading"
-        :empty-state="{ icon: 'i-material-symbols-list', label: '暂无数据' }"
+        :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
       >
         <template #description-data="{ row }">
           <span class="line-clamp-2">{{ row.description }}</span>
@@ -59,14 +63,14 @@
         <template #actions-data="{ row }">
           <UButtonGroup>
             <UButton
-              icon="i-material-symbols-edit"
+              icon="i-heroicons-pencil"
               color="primary"
               variant="ghost"
               size="xs"
               @click="handleEdit(row)"
             />
             <UButton
-              icon="i-material-symbols-delete"
+              icon="i-heroicons-trash"
               color="red"
               variant="ghost"
               size="xs"
@@ -84,7 +88,7 @@
           <div class="flex items-center justify-between">
             <h3 class="text-xl font-bold text-gray-900">{{ isEdit ? '编辑产品' : '新增产品' }}</h3>
             <UButton
-              icon="i-material-symbols-close"
+              icon="i-heroicons-x-mark"
               color="gray"
               variant="ghost"
               @click="showDialog = false"
