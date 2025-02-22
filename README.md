@@ -5,47 +5,32 @@
 - `dsms-web/`: 前端项目 (Vue.js)
 - `dsms-backend/`: 后端项目 (Spring Boot)
 
+
+## 数据库设计规范
+
+### 表命名规范
+
+1. 所有表名必须以 `t_` 前缀开头
+2. 表名使用小写字母
+3. 多个单词之间使用下划线 `_` 分隔
+4. 表名应该使用英文单词，并且能够清晰表达表的用途
+
+### 字段命名规范
+
+1. 字段名使用小写字母
+2. 多个单词之间使用下划线 `_` 分隔
+4. 创建时间字段统一命名为 `created_at`
+5. 更新时间字段统一命名为 `updated_at`
+6. 最后修改人字段统一命名为 `last_modified_by`
+7. 布尔类型字段使用 `is_` 前缀，如 `is_active`
+
+### 索引命名规范
+
+1. 主键索引：`pk_表名`
+2. 唯一索引：`uk_表名_字段名`
+3. 普通索引：`idx_表名_字段名`
+
 ## 系统设计
-
-### 产品管理功能流程图
-
-```mermaid
-flowchart TD
-    A[开始] --> B[显示产品列表]
-    B --> T[筛选产品]
-    T --> T1[按产品英文名称搜索]
-    T --> T2[按产品中文名称筛选]
-    T1 --> B
-    T2 --> B
-    B --> C[选择操作类型]
-    C --> D[新增产品]
-    C --> E[编辑产品]
-    C --> F[删除产品]
-    C --> G[查看产品详情]
-    
-    D --> H[填写产品信息]
-    H --> I{验证产品信息}
-    I -->|验证失败| J[显示错误信息]
-    J --> H
-    I -->|验证通过| K[保存产品信息]
-    K --> B
-    
-    E --> L[加载产品信息]
-    L --> M[修改产品信息]
-    M --> N{验证产品信息}
-    N -->|验证失败| O[显示错误信息]
-    O --> M
-    N -->|验证通过| P[更新产品信息]
-    P --> B
-    
-    F --> Q{确认删除}
-    Q -->|取消| B
-    Q -->|确认| R[删除产品]
-    R --> B
-    
-    G --> S[显示产品详细信息]
-    S --> B
-```
 
 ### 登录功能流程图
 
@@ -66,19 +51,6 @@ flowchart TD
     K --> L[结束]
 ```
 
-### 产品管理ER图
-
-```mermaid
-erDiagram
-    t_PRODUCT {
-        string product_name_en PK
-        string product_name_cn
-        string description
-        datetime created_at
-        datetime updated_at
-        string last_modified_by
-    }
-```
 ### 用户认证ER图
 
 ```mermaid
@@ -121,6 +93,58 @@ erDiagram
         string permission_id FK
     }
 ```
+### 产品管理功能流程图
+
+```mermaid
+flowchart TD
+    A[开始] --> B[显示产品列表]
+    B --> T[筛选产品]
+    T --> T1[按产品英文名称搜索]
+    T --> T2[按产品中文名称筛选]
+    T1 --> B
+    T2 --> B
+    B --> C[选择操作类型]
+    C --> D[新增产品]
+    C --> E[编辑产品]
+    C --> F[删除产品]
+    C --> G[查看产品详情]
+    
+    D --> H[填写产品信息]
+    H --> I{验证产品信息}
+    I -->|验证失败| J[显示错误信息]
+    J --> H
+    I -->|验证通过| K[保存产品信息]
+    K --> B
+    
+    E --> L[加载产品信息]
+    L --> M[修改产品信息]
+    M --> N{验证产品信息}
+    N -->|验证失败| O[显示错误信息]
+    O --> M
+    N -->|验证通过| P[更新产品信息]
+    P --> B
+    
+    F --> Q{确认删除}
+    Q -->|取消| B
+    Q -->|确认| R[删除产品]
+    R --> B
+    
+    G --> S[显示产品详细信息]
+    S --> B
+```
+### 产品管理ER图
+
+```mermaid
+erDiagram
+    t_PRODUCT {
+        string product_name_en PK
+        string product_name_cn
+        string description
+        datetime created_at
+        datetime updated_at
+        string last_modified_by
+    }
+```
 
 ## 开发环境要求
 
@@ -132,17 +156,3 @@ erDiagram
 - Java JDK 17+
 - Maven
 - Spring Boot
-
-## 启动说明
-
-### 前端项目
-```bash
-cd dsms-web
-npm install
-npm run dev
-```
-
-### 后端项目
-```bash
-cd dsms-backend
-./mvnw spring-boot:run
