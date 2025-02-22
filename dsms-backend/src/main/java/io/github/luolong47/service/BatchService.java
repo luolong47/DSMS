@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BatchService {
@@ -18,35 +19,53 @@ public class BatchService {
         this.batchRepository = batchRepository;
     }
     
-    public List<Batch> getAllBatches() {
-        return batchRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+    public List<BatchDTO> getAllBatches() {
+        return batchRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
+            .stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
     }
     
-    public Batch getBatch(String batchNo) {
-        return batchRepository.findById(batchNo)
+    public BatchDTO getBatch(String batchNo) {
+        Batch batch = batchRepository.findById(batchNo)
                 .orElseThrow(() -> new RuntimeException("批次不存在"));
+        return convertToDTO(batch);
     }
     
     @Transactional
-    public Batch createBatch(BatchDTO batchDTO) {
+    public BatchDTO createBatch(BatchDTO batchDTO) {
         Batch batch = new Batch();
         batch.setBatchNo(batchDTO.getBatchNo());
         batch.setStartDate(batchDTO.getStartDateTime());
         batch.setEndDate(batchDTO.getEndDateTime());
-        return batchRepository.save(batch);
+        return convertToDTO(batchRepository.save(batch));
     }
     
     @Transactional
-    public Batch updateBatch(String batchNo, BatchDTO batchDTO) {
-        Batch batch = getBatch(batchNo);
+    public BatchDTO updateBatch(String batchNo, BatchDTO batchDTO) {
+        Batch batch = getBatchEntity(batchNo);
         batch.setStartDate(batchDTO.getStartDateTime());
         batch.setEndDate(batchDTO.getEndDateTime());
-        return batchRepository.save(batch);
+        return convertToDTO(batchRepository.save(batch));
     }
     
     @Transactional
     public void deleteBatch(String batchNo) {
-        Batch batch = getBatch(batchNo);
+        Batch batch = getBatchEntity(batchNo);
         batchRepository.delete(batch);
+    }
+
+    private Batch getBatchEntity(String batchNo) {
+        return batchRepository.findById(batchNo)
+                .orElseThrow(() -> new RuntimeException("批次不存在"));
+    }
+
+    private BatchDTO convertToDTO(Batch batch) {
+        BatchDTO dto = new BatchDTO();
+        dto.setBatchNo(batch.getBatchNo());
+        dto.setStartDate(batch.getStartDate().toLocalDate());
+        dto.setEndDate(batch.getEndDate().toLocalDate());
+        dto.setCreatedAt(batch.getCreatedAt());
+        return dto;
     }
 } 

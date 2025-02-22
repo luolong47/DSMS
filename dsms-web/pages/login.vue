@@ -1,42 +1,61 @@
 <template>
   <NuxtLayout name="empty">
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-100">
-      <div class="max-w-md w-full transform transition-all duration-300 hover:scale-105">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
-          <div class="text-center">
-            <h2 class="text-3xl font-bold text-gray-900 mb-2">欢迎登录</h2>
-            <p class="text-gray-600 text-sm">请输入您的账号信息</p>
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <UCard class="max-w-md w-full transform transition-all duration-300 hover:scale-102 bg-white/80 backdrop-blur-sm">
+        <template #header>
+          <div class="text-center space-y-2">
+            <h2 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">欢迎登录</h2>
+            <p class="text-gray-500 text-sm">请输入您的账号信息</p>
           </div>
+        </template>
 
-          <form class="space-y-6" @submit.prevent="handleLogin">
-            <div class="space-y-4">
-              <div class="relative">
-                <label for="username" class="text-sm font-medium text-gray-700 block mb-1">用户名</label>
-                <input id="username" v-model="formData.username" name="username" type="text" required
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 bg-gray-50 hover:bg-white"
-                  placeholder="请输入用户名">
-              </div>
+        <UForm :state="formData" class="space-y-6" @submit="handleLogin">
+          <UFormGroup label="用户名">
+            <UInput
+              v-model="formData.username"
+              name="username"
+              icon="i-material-symbols-person"
+              placeholder="请输入用户名"
+              required
+              autocomplete="username"
+              color="primary"
+            />
+          </UFormGroup>
 
-              <div class="relative">
-                <label for="password" class="text-sm font-medium text-gray-700 block mb-1">密码</label>
-                <input id="password" v-model="formData.password" name="password" type="password" required
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 bg-gray-50 hover:bg-white"
-                  placeholder="请输入密码">
-              </div>
-            </div>
+          <UFormGroup label="密码">
+            <UInput
+              v-model="formData.password"
+              name="password"
+              type="password"
+              icon="i-material-symbols-lock"
+              placeholder="请输入密码"
+              required
+              autocomplete="current-password"
+              color="primary"
+            />
+          </UFormGroup>
 
-            <div v-if="error" 
-              class="p-3 rounded-lg bg-red-50 text-red-600 text-sm text-center animate-bounce">
-              {{ error }}
-            </div>
+          <UAlert
+            v-if="error"
+            type="error"
+            title="登录失败"
+            :description="error"
+            icon="i-material-symbols-error"
+            class="animate-bounce"
+          />
 
-            <button type="submit"
-              class="w-full py-3 px-4 border border-transparent rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl font-medium text-sm">
-              登录
-            </button>
-          </form>
-        </div>
-      </div>
+          <UButton
+            type="submit"
+            color="primary"
+            size="lg"
+            block
+            :loading="loading"
+            icon="i-material-symbols-login"
+          >
+            登录
+          </UButton>
+        </UForm>
+      </UCard>
     </div>
   </NuxtLayout>
 </template>
@@ -44,32 +63,36 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const api = useApi()
 const formData = ref({
-  username: '',
-  password: ''
+  username: 'admin',
+  password: '123456'
 })
 const error = ref('')
+const loading = ref(false)
 
 const handleLogin = async () => {
   try {
+    loading.value = true
     error.value = ''
-    const response = await axios.post('/api/auth/login', formData.value)
-    const data = response.data
+    const data = await api.post('/api/auth/login', formData.value)
     if (data && data.token && data.userInfo) {
       authStore.setAuth(data.token, data.userInfo)
       // 确保认证状态已更新
       authStore.initializeAuth()
       await router.push('/')
     } else {
-      error.value = '登录失败：服务器响应格式错误'
+      error.value = '服务器响应格式错误'
     }
   } catch (e) {
-    error.value = e.response?.data?.message || '登录失败：请检查网络连接'
+    error.value = e.data?.message || '请检查网络连接'
+  } finally {
+    loading.value = false
   }
 }
 </script>

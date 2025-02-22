@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV === 'development' },
 
   modules: [
     '@nuxtjs/tailwindcss',
@@ -28,13 +28,12 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    devProxy: {
-      '/api': {
-        target: 'http://localhost:8080/api',
-        changeOrigin: true
+    routeRules: {
+      '/api/**': {
+        proxy: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080/api/**'
       }
     }
   },
 
-  compatibilityDate: '2025-02-21'
+  compatibilityDate: '2024-02-21'
 })

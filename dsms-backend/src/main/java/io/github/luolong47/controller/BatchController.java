@@ -19,22 +19,22 @@ public class BatchController {
     }
     
     @GetMapping
-    public ResponseEntity<List<Batch>> getAllBatches() {
+    public ResponseEntity<List<BatchDTO>> getAllBatches() {
         return ResponseEntity.ok(batchService.getAllBatches());
     }
     
     @GetMapping("/{batchNo}")
-    public ResponseEntity<Batch> getBatch(@PathVariable String batchNo) {
+    public ResponseEntity<BatchDTO> getBatch(@PathVariable String batchNo) {
         return ResponseEntity.ok(batchService.getBatch(batchNo));
     }
     
     @PostMapping
-    public ResponseEntity<Batch> createBatch(@Valid @RequestBody BatchDTO batchDTO) {
+    public ResponseEntity<BatchDTO> createBatch(@Valid @RequestBody BatchDTO batchDTO) {
         return ResponseEntity.ok(batchService.createBatch(batchDTO));
     }
     
     @PutMapping("/{batchNo}")
-    public ResponseEntity<Batch> updateBatch(
+    public ResponseEntity<BatchDTO> updateBatch(
             @PathVariable String batchNo,
             @Valid @RequestBody BatchDTO batchDTO) {
         return ResponseEntity.ok(batchService.updateBatch(batchNo, batchDTO));

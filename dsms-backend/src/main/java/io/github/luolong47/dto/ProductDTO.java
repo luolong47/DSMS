@@ -1,8 +1,10 @@
 package io.github.luolong47.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class ProductDTO {
@@ -16,4 +18,7 @@ public class ProductDTO {
     
     @Size(max = 1000, message = "描述长度不能超过1000个字符")
     private String description;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
 }

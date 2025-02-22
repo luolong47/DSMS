@@ -20,6 +20,9 @@ public class BatchDTO {
     @NotNull(message = "结束日期不能为空")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
     
     public LocalDateTime getStartDateTime() {
         return startDate != null ? startDate.atStartOfDay() : null;
