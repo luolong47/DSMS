@@ -4,10 +4,52 @@
       <h2 class="text-2xl font-bold text-gray-900">产品管理</h2>
       <button
         @click="handleAdd"
-        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center"
+        title="新增产品"
       >
-        新增产品
+        <Icon name="material-symbols:add" class="h-5 w-5" />
+        <span class="ml-1"></span>
       </button>
+    </div>
+
+    <!-- 搜索筛选 -->
+    <div class="mb-6 flex space-x-4">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1"></label>
+        <div class="relative">
+          <input
+            v-model="searchEnName"
+            type="text"
+            placeholder="请输入产品英文名称"
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pr-8"
+          />
+          <button
+            v-if="searchEnName"
+            @click="searchEnName = ''"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+          >
+            <Icon name="material-symbols:close" class="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1"></label>
+        <div class="relative">
+          <input
+            v-model="searchCnName"
+            type="text"
+            placeholder="请输入产品中文名称"
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pr-8"
+          />
+          <button
+            v-if="searchCnName"
+            @click="searchCnName = ''"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+          >
+            <Icon name="material-symbols:close" class="h-5 w-5" />
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- 产品列表 -->
@@ -23,23 +65,25 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="product in products" :key="product.product_name_en">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.product_name_en }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.product_name_cn }}</td>
+          <tr v-for="product in filteredProducts" :key="product.productNameEn">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.productNameEn }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.productNameCn }}</td>
             <td class="px-6 py-4 text-sm text-gray-900">{{ product.description }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDate(product.created_at) }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDate(product.createdAt) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
               <button
                 @click="handleEdit(product)"
-                class="text-indigo-600 hover:text-indigo-900"
+                class="text-indigo-600 hover:text-indigo-900 p-1 rounded-full hover:bg-indigo-50"
+                title="编辑"
               >
-                编辑
+                <Icon name="material-symbols:edit" class="h-5 w-5" />
               </button>
               <button
                 @click="handleDelete(product)"
-                class="text-red-600 hover:text-red-900"
+                class="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
+                title="删除"
               >
-                删除
+                <Icon name="material-symbols:delete" class="h-5 w-5" />
               </button>
             </td>
           </tr>
@@ -56,7 +100,7 @@
             <div>
               <label class="block text-sm font-medium text-gray-700">英文名称</label>
               <input
-                v-model="form.product_name_en"
+                v-model="form.productNameEn"
                 type="text"
                 :disabled="isEdit"
                 required
@@ -66,7 +110,7 @@
             <div>
               <label class="block text-sm font-medium text-gray-700">中文名称</label>
               <input
-                v-model="form.product_name_cn"
+                v-model="form.productNameCn"
                 type="text"
                 required
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -103,15 +147,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const products = ref([])
 const showDialog = ref(false)
 const isEdit = ref(false)
+const searchEnName = ref('')
+const searchCnName = ref('')
+
 const form = ref({
-  product_name_en: '',
-  product_name_cn: '',
+  productNameEn: '',
+  productNameCn: '',
   description: ''
+})
+
+// 筛选后的产品列表
+const filteredProducts = computed(() => {
+  return products.value.filter(product => {
+    const matchEnName = product.productNameEn.toLowerCase().includes(searchEnName.value.toLowerCase())
+    const matchCnName = product.productNameCn.includes(searchCnName.value)
+    return matchEnName && matchCnName
+  })
 })
 
 // 获取产品列表
@@ -139,8 +195,8 @@ const formatDate = (date) => {
 const handleAdd = () => {
   isEdit.value = false
   form.value = {
-    product_name_en: '',
-    product_name_cn: '',
+    productNameEn: '',
+    productNameCn: '',
     description: ''
   }
   showDialog.value = true
@@ -159,7 +215,7 @@ const handleDelete = async (product) => {
   
   try {
     const token = localStorage.getItem('token')
-    const response = await fetch(`/api/products/${product.product_name_en}`, {
+    const response = await fetch(`/api/products/${product.productNameEn}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -176,7 +232,7 @@ const handleDelete = async (product) => {
 const handleSubmit = async () => {
   try {
     const url = isEdit.value
-      ? `/api/products/${form.value.product_name_en}`
+      ? `/api/products/${form.value.productNameEn}`
       : '/api/products'
     const method = isEdit.value ? 'PUT' : 'POST'
     const token = localStorage.getItem('token')

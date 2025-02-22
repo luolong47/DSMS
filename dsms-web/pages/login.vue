@@ -58,7 +58,7 @@ const error = ref('')
 const handleLogin = async () => {
   try {
     error.value = ''
-    const response = await axios.post('http://localhost:8080/api/auth/login', formData.value)
+    const response = await axios.post('/api/auth/login', formData.value)
     const data = response.data
     if (data && data.token && data.userInfo) {
       authStore.setAuth(data.token, data.userInfo)

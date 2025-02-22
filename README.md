@@ -12,6 +12,11 @@
 ```mermaid
 flowchart TD
     A[开始] --> B[显示产品列表]
+    B --> T[筛选产品]
+    T --> T1[按产品英文名称搜索]
+    T --> T2[按产品中文名称筛选]
+    T1 --> B
+    T2 --> B
     B --> C[选择操作类型]
     C --> D[新增产品]
     C --> E[编辑产品]
@@ -71,6 +76,7 @@ erDiagram
         string description
         datetime created_at
         datetime updated_at
+        string last_modified_by
     }
 ```
 ### 用户认证ER图
