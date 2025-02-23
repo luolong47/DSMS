@@ -83,8 +83,6 @@ const handleLogin = async () => {
     const data = await api.post('/api/auth/login', formData.value)
     if (data && data.token && data.userInfo) {
       authStore.setAuth(data.token, data.userInfo)
-      // 确保认证状态已更新
-      authStore.initializeAuth()
       await router.push('/')
     } else {
       error.value = '服务器响应格式错误'

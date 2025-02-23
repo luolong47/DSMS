@@ -1,8 +1,8 @@
 <template>
-  <UContainer>
-    <UCard class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+  <div class="h-full">
+    <div class="h-full bg-gradient-to-br from-gray-50 to-blue-50">
       <!-- 头部区域 -->
-      <template #header>
+      <div class="p-4 bg-white border-b">
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">产品批次关联管理</h2>
@@ -18,10 +18,10 @@
             新增关联
           </UButton>
         </div>
-      </template>
+      </div>
 
       <!-- 搜索筛选 -->
-      <div class="mb-8">
+      <div class="p-4">
         <UForm :state="searchForm">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <UFormGroup>
@@ -117,32 +117,34 @@
       </div>
 
       <!-- 数据表格 -->
-      <UTable
-        :rows="productBatches"
-        :columns="columns"
-        :loading="loading"
-        :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
-      >
-        <template #actions-data="{ row }">
-          <UButtonGroup>
-            <UButton
-              icon="i-heroicons-eye"
-              color="primary"
-              variant="ghost"
-              size="xs"
-              @click="handleView(row)"
-            />
-            <UButton
-              icon="i-heroicons-trash"
-              color="red"
-              variant="ghost"
-              size="xs"
-              @click="handleDelete(row)"
-            />
-          </UButtonGroup>
-        </template>
-      </UTable>
-    </UCard>
+      <div class="px-4">
+        <UTable
+          :rows="productBatches"
+          :columns="columns"
+          :loading="loading"
+          :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
+        >
+          <template #actions-data="{ row }">
+            <UButtonGroup>
+              <UButton
+                icon="i-heroicons-eye"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                @click="handleView(row)"
+              />
+              <UButton
+                icon="i-heroicons-trash"
+                color="red"
+                variant="ghost"
+                size="xs"
+                @click="handleDelete(row)"
+              />
+            </UButtonGroup>
+          </template>
+        </UTable>
+      </div>
+    </div>
 
     <!-- 新增/查看弹窗 -->
     <UModal v-model="showDialog" :ui="{ width: 'md' }">
@@ -246,7 +248,7 @@
         </template>
       </UCard>
     </UModal>
-  </UContainer>
+  </div>
 </template>
 
 <script setup>

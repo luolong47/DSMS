@@ -66,6 +66,8 @@ public class BatchService {
         dto.setStartDate(batch.getStartDate().toLocalDate());
         dto.setEndDate(batch.getEndDate().toLocalDate());
         dto.setCreatedAt(batch.getCreatedAt());
+        dto.setUpdatedAt(batch.getUpdatedAt());
+        dto.setLastModifiedBy(batch.getLastModifiedBy());
         return dto;
     }
 } 

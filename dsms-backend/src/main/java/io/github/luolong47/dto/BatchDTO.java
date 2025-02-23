@@ -24,6 +24,11 @@ public class BatchDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
+    
+    private String lastModifiedBy;
+    
     public LocalDateTime getStartDateTime() {
         return startDate != null ? startDate.atStartOfDay() : null;
     }

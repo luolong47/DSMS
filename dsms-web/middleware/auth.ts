@@ -6,8 +6,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const authStore = useAuthStore()
   
-  // 初始化认证状态
-  authStore.initializeAuth()
+  // 如果未登录，尝试从Cookie恢复认证状态
+  if (!authStore.isAuthenticated) {
+    authStore.initializeAuth()
+  }
 
   // 如果用户访问登录页
   if (to.path === '/login') {

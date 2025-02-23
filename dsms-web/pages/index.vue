@@ -86,6 +86,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const user = ref(null)
@@ -102,13 +103,13 @@ const formatDate = (date) => {
 }
 
 onMounted(() => {
-  // 检查登录状态
-  const token = localStorage.getItem('token')
-  if (!token) {
+  const authStore = useAuthStore()
+  
+  if (!authStore.isAuthenticated) {
     router.push('/login')
     return
   }
-  // 获取用户信息
-  user.value = JSON.parse(localStorage.getItem('user'))
+  
+  user.value = authStore.user
 })
 </script>

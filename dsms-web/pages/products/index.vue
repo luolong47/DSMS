@@ -1,8 +1,8 @@
 <template>
-  <UContainer>
-    <UCard class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+  <div class="h-full">
+    <div class="h-full bg-gradient-to-br from-gray-50 to-blue-50">
       <!-- 头部区域 -->
-      <template #header>
+      <div class="p-4 bg-white border-b">
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">产品管理</h2>
@@ -18,10 +18,10 @@
             新增产品
           </UButton>
         </div>
-      </template>
+      </div>
 
       <!-- 搜索筛选 -->
-      <div class="mb-8">
+      <div class="p-4">
         <UForm :state="searchForm">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormGroup>
@@ -67,42 +67,51 @@
       </div>
 
       <!-- 产品列表 -->
-      <UTable
-        :rows="filteredProducts"
-        :columns="columns"
-        :loading="loading"
-        :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
-      >
-        <template #description-data="{ row }">
-          <span class="line-clamp-2">{{ row.description }}</span>
-        </template>
-        <template #actions-data="{ row }">
-          <UButtonGroup>
-            <UButton
-              icon="i-heroicons-pencil"
-              color="primary"
-              variant="ghost"
-              size="xs"
-              @click="handleEdit(row)"
-            />
-            <UButton
-              icon="i-heroicons-trash"
-              color="red"
-              variant="ghost"
-              size="xs"
-              @click="handleDelete(row)"
-            />
-          </UButtonGroup>
-        </template>
-      </UTable>
-    </UCard>
+      <div class="px-4">
+        <UTable
+          :rows="filteredProducts"
+          :columns="columns"
+          :loading="loading"
+          :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
+        >
+          <template #description-data="{ row }">
+            <span class="line-clamp-2">{{ row.description }}</span>
+          </template>
+          <template #actions-data="{ row }">
+            <UButtonGroup>
+              <UButton
+                icon="i-heroicons-eye"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                @click="handleView(row)"
+              />
+              <UButton
+                icon="i-heroicons-pencil"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                @click="handleEdit(row)"
+              />
+              <UButton
+                icon="i-heroicons-trash"
+                color="red"
+                variant="ghost"
+                size="xs"
+                @click="handleDelete(row)"
+              />
+            </UButtonGroup>
+          </template>
+        </UTable>
+      </div>
+    </div>
 
     <!-- 产品表单对话框 -->
     <UModal v-model="showDialog" :ui="{ width: 'md' }">
       <UCard :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
         <template #header>
           <div class="flex items-center justify-between">
-            <h3 class="text-xl font-bold text-gray-900">{{ isEdit ? '编辑产品' : '新增产品' }}</h3>
+            <h3 class="text-xl font-bold text-gray-900">{{ isViewMode ? '查看产品详情' : (isEdit ? '编辑产品' : '新增产品') }}</h3>
             <UButton
               icon="i-heroicons-x-mark"
               color="gray"
@@ -112,7 +121,38 @@
           </div>
         </template>
 
-        <UForm :state="form" class="space-y-6 py-4" @submit="handleSubmit">
+        <template v-if="isViewMode">
+          <div class="space-y-6 py-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">英文名称</label>
+                <div class="mt-1 text-gray-900">{{ currentItem.productNameEn }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">中文名称</label>
+                <div class="mt-1 text-gray-900">{{ currentItem.productNameCn }}</div>
+              </div>
+              <div class="col-span-2">
+                <label class="block text-sm font-medium text-gray-700">描述</label>
+                <div class="mt-1 text-gray-900">{{ currentItem.description || '-' }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">创建时间</label>
+                <div class="mt-1 text-gray-900">{{ formatDateTime(currentItem.createdAt) }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">最后修改时间</label>
+                <div class="mt-1 text-gray-900">{{ formatDateTime(currentItem.updatedAt) }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">最后修改人</label>
+                <div class="mt-1 text-gray-900">{{ currentItem.lastModifiedBy }}</div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <UForm v-else :state="form" class="space-y-6 py-4" @submit="handleSubmit">
           <UFormGroup label="英文名称" required>
             <UInput
               v-model="form.productNameEn"
@@ -157,7 +197,7 @@
         </template>
       </UCard>
     </UModal>
-  </UContainer>
+  </div>
 </template>
 
 <script setup>
@@ -170,6 +210,8 @@ const showDialog = ref(false)
 const isEdit = ref(false)
 const loading = ref(false)
 const submitting = ref(false)
+const isViewMode = ref(false)
+const currentItem = ref(null)
 
 // 搜索表单
 const searchForm = ref({
@@ -193,15 +235,6 @@ const columns = [
   {
     key: 'productNameCn',
     label: '中文名称'
-  },
-  {
-    key: 'description',
-    label: '描述'
-  },
-  {
-    key: 'createdAt',
-    label: '创建时间',
-    formatter: (value) => formatDate(value)
   },
   {
     key: 'actions',
@@ -237,13 +270,16 @@ const fetchProducts = async () => {
   }
 }
 
-// 格式化日期
-const formatDate = (date) => {
+// 格式化日期时间
+const formatDateTime = (date) => {
   if (!date) return '-'
-  return new Date(date).toLocaleDateString('zh-CN', {
+  return new Date(date).toLocaleString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
   })
 }
 
@@ -323,6 +359,14 @@ const handleSubmit = async () => {
   } finally {
     submitting.value = false
   }
+}
+
+// 查看产品
+const handleView = (item) => {
+  isViewMode.value = true
+  isEdit.value = false
+  currentItem.value = item
+  showDialog.value = true
 }
 
 onMounted(() => {

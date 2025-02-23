@@ -1,8 +1,8 @@
 <template>
-  <UContainer>
-    <UCard class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+  <div class="h-full">
+    <div class="h-full bg-gradient-to-br from-gray-50 to-blue-50">
       <!-- 头部区域 -->
-      <template #header>
+      <div class="p-4 bg-white border-b">
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">批次管理</h2>
@@ -18,10 +18,10 @@
             新增批次
           </UButton>
         </div>
-      </template>
+      </div>
 
       <!-- 搜索筛选 -->
-      <div class="mb-8">
+      <div class="p-4">
         <UForm :state="searchForm">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <UFormGroup>
@@ -98,39 +98,48 @@
       </div>
 
       <!-- 批次列表 -->
-      <UTable
-        :rows="filteredBatches"
-        :columns="columns"
-        :loading="loading"
-        :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
-      >
-        <template #actions-data="{ row }">
-          <UButtonGroup>
-            <UButton
-              icon="i-heroicons-pencil"
-              color="primary"
-              variant="ghost"
-              size="xs"
-              @click="handleEdit(row)"
-            />
-            <UButton
-              icon="i-heroicons-trash"
-              color="red"
-              variant="ghost"
-              size="xs"
-              @click="handleDelete(row)"
-            />
-          </UButtonGroup>
-        </template>
-      </UTable>
-    </UCard>
+      <div class="px-4">
+        <UTable
+          :rows="filteredBatches"
+          :columns="columns"
+          :loading="loading"
+          :empty-state="{ icon: 'i-heroicons-list-bullet', label: '暂无数据' }"
+        >
+          <template #actions-data="{ row }">
+            <UButtonGroup>
+              <UButton
+                icon="i-heroicons-eye"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                @click="handleView(row)"
+              />
+              <UButton
+                icon="i-heroicons-pencil"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                @click="handleEdit(row)"
+              />
+              <UButton
+                icon="i-heroicons-trash"
+                color="red"
+                variant="ghost"
+                size="xs"
+                @click="handleDelete(row)"
+              />
+            </UButtonGroup>
+          </template>
+        </UTable>
+      </div>
+    </div>
 
     <!-- 批次表单对话框 -->
     <UModal v-model="showDialog" :ui="{ width: 'md' }">
       <UCard :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
         <template #header>
           <div class="flex items-center justify-between">
-            <h3 class="text-xl font-bold text-gray-900">{{ isEdit ? '编辑批次' : '新增批次' }}</h3>
+            <h3 class="text-xl font-bold text-gray-900">{{ isViewMode ? '查看批次详情' : (isEdit ? '编辑批次' : '新增批次') }}</h3>
             <UButton
               icon="i-heroicons-x-mark"
               color="gray"
@@ -140,7 +149,38 @@
           </div>
         </template>
 
-        <UForm :state="form" class="space-y-6 py-4" @submit="handleSubmit">
+        <template v-if="isViewMode">
+          <div class="space-y-6 py-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">批次号</label>
+                <div class="mt-1 text-gray-900">{{ currentItem.batchNo }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">开始日期</label>
+                <div class="mt-1 text-gray-900">{{ formatDate(currentItem.startDate) }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">结束日期</label>
+                <div class="mt-1 text-gray-900">{{ formatDate(currentItem.endDate) }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">创建时间</label>
+                <div class="mt-1 text-gray-900">{{ formatDateTime(currentItem.createdAt) }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">最后修改时间</label>
+                <div class="mt-1 text-gray-900">{{ formatDateTime(currentItem.updatedAt) }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">最后修改人</label>
+                <div class="mt-1 text-gray-900">{{ currentItem.lastModifiedBy }}</div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <UForm v-else :state="form" class="space-y-6 py-4" @submit="handleSubmit">
           <UFormGroup label="批次号" required>
             <UInput
               v-model="form.batchNo"
@@ -187,7 +227,7 @@
         </template>
       </UCard>
     </UModal>
-  </UContainer>
+  </div>
 </template>
 
 <script setup>
@@ -202,6 +242,8 @@ const showDialog = ref(false)
 const isEdit = ref(false)
 const loading = ref(false)
 const submitting = ref(false)
+const isViewMode = ref(false)
+const currentItem = ref(null)
 
 // 搜索表单
 const searchForm = ref({
@@ -231,11 +273,6 @@ const columns = [
   {
     key: 'endDate',
     label: '结束日期',
-    formatter: (value) => formatDate(value)
-  },
-  {
-    key: 'createdAt',
-    label: '创建时间',
     formatter: (value) => formatDate(value)
   },
   {
@@ -282,6 +319,12 @@ const formatDate = (date) => {
   return format(new Date(date), 'yyyy-MM-dd')
 }
 
+// 格式化日期时间
+const formatDateTime = (date) => {
+  if (!date) return '-'
+  return format(new Date(date), 'yyyy-MM-dd HH:mm:ss')
+}
+
 // 新增批次
 const handleAdd = () => {
   isEdit.value = false
@@ -301,6 +344,14 @@ const handleEdit = (batch) => {
     startDate: batch.startDate,
     endDate: batch.endDate
   }
+  showDialog.value = true
+}
+
+// 查看批次详情
+const handleView = (item) => {
+  isViewMode.value = true
+  isEdit.value = false
+  currentItem.value = item
   showDialog.value = true
 }
 

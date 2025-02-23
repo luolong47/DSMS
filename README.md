@@ -279,6 +279,150 @@ erDiagram
     }
 ```
 
+### 数据库参数管理功能流程图
+
+```mermaid
+flowchart TD
+    A[开始] --> B[显示数据库配置列表]
+    B --> T[筛选配置]
+    T --> T1[按配置名称搜索]
+    T --> T2[按url筛选]
+    T --> T3[按username筛选]
+    T1 --> B
+    T2 --> B
+    T3 --> B
+
+    B --> C[选择操作类型]
+    C --> D[新增配置]
+    C --> E[编辑配置]
+    C --> F[删除配置]
+    C --> G[复制配置]
+    
+    D --> D1[填写配置名称]
+    D1 --> D2[输入数据库URL]
+    D2 --> D3[自动识别数据库类型]
+    D3 --> D4[自动填充驱动类名]
+    D4 --> D5[自动获取Schema列表]
+    D5 --> D6[填写用户名密码]
+    D6 --> D7[测试连接]
+    D7 -->|连接失败| D8[显示错误信息]
+    D8 --> D6
+    D7 -->|连接成功| D9{是否保存}
+    D9 -->|取消| B
+    D9 -->|确认| D10[保存配置]
+    D10 --> B
+    
+    E --> E1[加载配置信息]
+    E1 --> E2[修改配置信息]
+    E2 --> E3[测试连接]
+    E3 -->|连接失败| E4[显示错误信息]
+    E4 --> E2
+    E3 -->|连接成功| E5{是否保存}
+    E5 -->|取消| B
+    E5 -->|确认| E6[更新配置]
+    E6 --> B
+    
+    F --> F1{确认删除}
+    F1 -->|取消| B
+    F1 -->|确认| F2[删除配置]
+    F2 --> B
+    
+    G --> G1[复制现有配置]
+    G1 --> G2[自动填充配置信息]
+    G2 --> D1
+```
+
+### 数据库参数管理ER图
+
+```mermaid
+erDiagram
+    t_DB_CONFIG {
+        string config_name PK
+        string type "数据库类型"
+        string url "数据库连接地址"
+        string username "数据库用户名"
+        string password "数据库密码"
+        string driver_class_name "数据库驱动类名"
+        string schema "数据库schema"
+        datetime created_at
+        datetime updated_at
+        string last_modified_by
+    }
+```
+
+### 产品批次配置管理功能流程图
+
+```mermaid
+flowchart TD
+    A[开始] --> B[显示产品批次配置列表]
+    B --> T[筛选配置]
+    T --> T1[按产品名称搜索]
+    T --> T2[按批次号搜索]
+    T --> T3[按数据库配置名称搜索]
+    T1 --> B
+    T2 --> B
+    T3 --> B
+    
+    B --> C[选择操作类型]
+    C --> D[新增配置]
+    C --> E[编辑配置]
+    C --> F[删除配置]
+    C --> G[查看配置详情]
+    C --> H[测试数据库连接]
+    
+    D --> D1[选择产品批次]
+    D1 --> D2[选择数据库配置]
+    D2 --> D3[填写配置信息]
+    D3 --> D4[测试连接]
+    D4 -->|连接失败| D5[显示错误信息]
+    D5 --> D3
+    D4 -->|连接成功| D6{是否保存}
+    D6 -->|取消| B
+    D6 -->|确认| D7[保存配置]
+    D7 --> B
+    
+    E --> E1[加载配置信息]
+    E1 --> E2[修改配置信息]
+    E2 --> E3[测试连接]
+    E3 -->|连接失败| E4[显示错误信息]
+    E4 --> E2
+    E3 -->|连接成功| E5{是否保存}
+    E5 -->|取消| B
+    E5 -->|确认| E6[更新配置]
+    E6 --> B
+    
+    F --> F1{确认删除}
+    F1 -->|取消| B
+    F1 -->|确认| F2[删除配置]
+    F2 --> B
+    
+    G --> G1[显示配置详细信息]
+    G1 --> B
+    
+    H --> H1[测试数据库连接]
+    H1 -->|连接失败| H2[显示错误信息]
+    H2 --> B
+    H1 -->|连接成功| H3[显示成功信息]
+    H3 --> B
+```
+
+### 产品批次配置管理ER图
+
+```mermaid
+erDiagram
+    t_PRODUCT_BATCH ||--o{ t_PRODUCT_BATCH_CONFIG : has
+    t_DB_CONFIG ||--o{ t_PRODUCT_BATCH_CONFIG : used_by
+    
+    t_PRODUCT_BATCH_CONFIG {
+        string config_id PK "product_batch_id下划线拼接config_name"
+        string product_batch_id FK
+        string config_name FK
+        datetime created_at
+        datetime updated_at
+        string last_modified_by
+    }
+```
+
 ## 开发环境要求
 
 ### 前端
